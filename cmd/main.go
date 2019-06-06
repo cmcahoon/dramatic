@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	system := ligero.NewActorSystem()
+	system := ligero.NewActorSystem("system")
 	actor := system.NewActor("double", func(msg interface{}) error {
 		switch typedMsg := msg.(type) {
 		case int:
 			log.Printf("Double of %d is %d", typedMsg, typedMsg*2)
 		default:
-			return errors.New("Unsupported message")
+			return errors.New("unsupported message")
 		}
 
 		return nil
@@ -21,7 +21,6 @@ func main() {
 
 	actor.Publish(2)
 
-	log.Println("Time to shut down...")
 	err := system.Terminate()
 	if err != nil {
 		log.Fatal(err)
