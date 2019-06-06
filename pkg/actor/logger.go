@@ -1,4 +1,4 @@
-package ligero
+package actor
 
 import "go.uber.org/zap"
 

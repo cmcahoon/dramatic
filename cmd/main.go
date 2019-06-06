@@ -2,13 +2,13 @@ package main
 
 import (
 	"errors"
-	"github.com/cmcahoon/ligero"
+	"github.com/cmcahoon/ligero/pkg/actor"
 	"log"
 )
 
 func main() {
-	system := ligero.NewActorSystem("system")
-	actor := system.NewActor("double", func(msg interface{}) error {
+	system := actor.NewActorSystem("system")
+	doubleActor := system.NewActor("double", func(msg interface{}) error {
 		switch typedMsg := msg.(type) {
 		case int:
 			log.Printf("Double of %d is %d", typedMsg, typedMsg*2)
@@ -19,7 +19,7 @@ func main() {
 		return nil
 	})
 
-	actor.Publish(2)
+	doubleActor.Publish(2)
 
 	err := system.Terminate()
 	if err != nil {

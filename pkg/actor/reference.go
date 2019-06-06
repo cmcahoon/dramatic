@@ -1,4 +1,4 @@
-package ligero
+package actor
 
 // ActorRef abstracts an actor away by providing an opaque reference to it. The reference can be used to publish
 // messages to the actor.
