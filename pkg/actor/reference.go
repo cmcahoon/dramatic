@@ -10,3 +10,16 @@ type ActorRef struct {
 func (a *ActorRef) Publish(msg interface{}) {
 	a.inbox <- msg
 }
+
+// Request kicks off a request-response cycle. Unlike `Publish`, this function expects a response from the target actor.
+func (a *ActorRef) Request(msg interface{}) Future {
+	future := NewFutureTask()
+
+	// Wrap the message in an envelop with the sender information
+	envelope := requestEnvelope{
+		Response: future,
+		Message:  msg,
+	}
+	a.inbox <- envelope
+	return future
+}

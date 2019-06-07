@@ -2,16 +2,16 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/cmcahoon/ligero/pkg/actor"
-	"log"
 )
 
 func main() {
 	system := actor.NewActorSystem("system")
-	doubleActor := system.NewActor("double", func(msg interface{}) error {
+	helloActor := system.NewActorFromFn("hello", func(msg interface{}, _ *actor.FutureTask) error {
 		switch typedMsg := msg.(type) {
-		case int:
-			log.Printf("Double of %d is %d", typedMsg, typedMsg*2)
+		case string:
+			fmt.Printf("Hello, %s!\n", typedMsg)
 		default:
 			return errors.New("unsupported message")
 		}
@@ -19,10 +19,10 @@ func main() {
 		return nil
 	})
 
-	doubleActor.Publish(2)
+	helloActor.Publish("Actor")
 
 	err := system.Terminate()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("%v\n", err)
 	}
 }

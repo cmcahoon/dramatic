@@ -5,9 +5,6 @@ import (
 	"sync"
 )
 
-// ActorFn is a function that will be called on each message received in the inbox.
-type ActorFn func(msg interface{}) error
-
 // ActorSystem is the root supervisor for multiple actors.
 type ActorSystem struct {
 	name   string
@@ -24,8 +21,8 @@ func NewActorSystem(name string) *ActorSystem {
 	}
 }
 
-// NewActor will add, and immediately run, a new actor within the actor system.
-func (s *ActorSystem) NewActor(name string, fn ActorFn) *ActorRef {
+// NewActorFromFn will add, and immediately run, a new actor within the actor system.
+func (s *ActorSystem) NewActorFromFn(name string, fn ActorFn) *ActorRef {
 	logger.Infow(
 		"adding actor",
 		"system_name", s.name,
@@ -52,6 +49,11 @@ func (s *ActorSystem) NewActor(name string, fn ActorFn) *ActorRef {
 	s.actors = append(s.actors, ref)
 
 	return ref
+}
+
+// NewActorFromStruct will add, and immediately run, a new actor within the actor system.
+func (s *ActorSystem) NewActorFromStruct(name string, actor Actor) *ActorRef {
+	return s.NewActorFromFn(name, actor.Receive)
 }
 
 // Terminate will cancel all actors in the system and return. This call is blocking.
