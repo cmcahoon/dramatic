@@ -12,7 +12,7 @@ func main() {
 	// Simulate a long running task
 	go func() {
 		time.Sleep(5 * time.Second)
-		err := future.SetResult("Done.")
+		err := future.Resolve("Done.")
 		if err != nil {
 			log.Fatal(err)
 		}

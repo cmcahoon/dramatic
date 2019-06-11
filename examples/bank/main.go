@@ -35,7 +35,7 @@ func (a *accountActor) Receive(msg interface{}, response *actor.FutureTask) erro
 		if response == nil {
 			return errors.New("response was nil")
 		}
-		err := response.SetResult(a.balance)
+		err := response.Resolve(a.balance)
 		if err != nil {
 			return errors.New(err.Error())
 		}

@@ -2,6 +2,7 @@ package actor
 
 import (
 	"errors"
+	"sync"
 )
 
 // Future promises the result of a long running job.
@@ -12,8 +13,7 @@ type Future interface {
 type futureState uint8
 
 const (
-	invalid futureState = iota
-	scheduled
+	scheduled futureState = iota
 	computed
 	cancelled
 	thrown
@@ -24,6 +24,7 @@ type FutureTask struct {
 	state  futureState
 	result interface{}
 	done   chan bool
+	mux    sync.Mutex
 }
 
 // NewFutureTask creates a new FutureTask.
@@ -37,39 +38,47 @@ func NewFutureTask() *FutureTask {
 
 // GetResult will provide the result of the computation. If the future is not computed yet, it will block.
 func (f *FutureTask) GetResult() (interface{}, error) {
-	switch f.state {
-	case invalid:
-		// TODO: Return error for getting result twice
+	// The current state can be changed by another thread using the Resolve function, so we lock the read if the state is
+	// being changed.
+	currentState := func() futureState {
+		f.mux.Lock()
+		defer f.mux.Unlock()
+
+		return f.state
+	}()
+
+	switch currentState {
+	case cancelled:
+		return nil, errors.New("future was cancelled")
+	case thrown:
+		return nil, errors.New("future returned an error")
 	case scheduled:
-		<-f.done
-		return f.result, nil
+		<-f.done // Blocking wait until the future is resolved
+		fallthrough
 	case computed:
 		return f.result, nil
-	case cancelled:
-		// TODO: Return error
-	case thrown:
-		// TODO: Return error
 	}
 
 	return nil, errors.New("unsupported future state; this should not happen")
 }
 
-// SetResult completes the computation. Any thread or goroutine waiting for GetResult() will be unblocked.
-func (f *FutureTask) SetResult(result interface{}) error {
+// Resolve completes the computation. Any thread or goroutine waiting for GetResult() will be unblocked.
+func (f *FutureTask) Resolve(result interface{}) error {
+	f.mux.Lock()
+	defer f.mux.Unlock()
+
 	switch f.state {
-	case invalid:
-		// TODO: Return error for setting result after read
+	case cancelled:
+		return errors.New("future was cancelled")
+	case thrown:
+		return errors.New("future already returned an error")
+	case computed:
+		return errors.New("future has already been resolved")
 	case scheduled:
 		f.result = result
 		f.state = computed
 		f.done <- true
 		return nil
-	case computed:
-		// TODO: Return error for setting result twice
-	case cancelled:
-		// TODO: Return error for setting result after cancel
-	case thrown:
-		// TODO: Return error for setting result after error
 	}
 
 	return errors.New("unsupported future state; this should not happen")
