@@ -51,7 +51,7 @@ func (f *FutureTask) GetResult() (interface{}, error) {
 	case cancelled:
 		return nil, errors.New("future was cancelled")
 	case thrown:
-		return nil, errors.New("future returned an error")
+		return nil, f.result.(error)
 	case scheduled:
 		<-f.done // Blocking wait until the future is resolved
 		fallthrough
@@ -71,12 +71,33 @@ func (f *FutureTask) Resolve(result interface{}) error {
 	case cancelled:
 		return errors.New("future was cancelled")
 	case thrown:
-		return errors.New("future already returned an error")
+		return errors.New("future has already been rejected")
 	case computed:
 		return errors.New("future has already been resolved")
 	case scheduled:
 		f.result = result
 		f.state = computed
+		f.done <- true
+		return nil
+	}
+
+	return errors.New("unsupported future state; this should not happen")
+}
+
+func (f *FutureTask) Reject(err error) error {
+	f.mux.Lock()
+	defer f.mux.Unlock()
+
+	switch f.state {
+	case cancelled:
+		return errors.New("future was cancelled")
+	case thrown:
+		return errors.New("future has already been rejected")
+	case computed:
+		return errors.New("future has already been resolved")
+	case scheduled:
+		f.result = err
+		f.state = thrown
 		f.done <- true
 		return nil
 	}
