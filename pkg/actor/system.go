@@ -12,6 +12,7 @@ var hasher *hashids.HashID
 func init() {
 	hd := hashids.NewData()
 	hd.Salt = "6B7E6B29-049D-48A6-A414-2B8D1A821EE3"
+	hd.MinLength = 8
 
 	var err error
 	hasher, err = hashids.NewWithData(hd)
