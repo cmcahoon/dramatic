@@ -4,7 +4,7 @@ package actor
 // messages to the actor.
 type ActorRef struct {
 	inbox chan<- interface{}
-	path  string
+	path  Path
 }
 
 // Publish will publish any arbitrary message to the actor's inbox.

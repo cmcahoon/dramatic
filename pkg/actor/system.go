@@ -44,13 +44,13 @@ func (s *ActorSystem) NewActorFromFn(name string, fn ActorFn) *ActorRef {
 	if err != nil {
 		logger.Fatal(err)
 	}
-	path := "/" + name + "/" + id
+	path := Path{id, name, ""}
 
 	logger.Infow(
 		"creating actor",
 		"system_name", s.name,
 		"actor_name", name,
-		"actor_path", path,
+		"actor_path", path.String(),
 	)
 
 	// Create the inbox and the actor
