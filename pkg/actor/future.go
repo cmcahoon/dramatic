@@ -54,6 +54,9 @@ func (f *FutureTask) GetResult() (interface{}, error) {
 		return nil, f.result.(error)
 	case scheduled:
 		<-f.done // Blocking wait until the future is resolved
+		if f.state == thrown {
+			return nil, f.result.(error)
+		}
 		fallthrough
 	case computed:
 		return f.result, nil
