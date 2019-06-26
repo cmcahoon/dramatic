@@ -14,13 +14,14 @@ type ActorFn func(msg interface{}, response *FutureTask) error
 
 type actor struct {
 	name  string
+	path  string
 	inbox <-chan interface{}
 	group *sync.WaitGroup
 	fn    ActorFn
 }
 
 func (a *actor) run() error {
-	logger.Infow("starting actor", "actor_name", a.name)
+	logger.Infow("starting actor", "actor_name", a.name, "actor_path", a.path)
 
 	go func() {
 		a.group.Add(1)
