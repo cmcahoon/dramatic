@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	system := actor.NewActorSystem("system")
+	system := actor.NewSystem("system")
 	helloActor := system.NewActorFromFn("hello", func(msg interface{}, _ *actor.FutureTask) error {
 		switch typedMsg := msg.(type) {
 		case string:

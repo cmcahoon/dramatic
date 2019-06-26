@@ -47,7 +47,7 @@ func (a *accountActor) Receive(msg interface{}, response *actor.FutureTask) erro
 }
 
 func main() {
-	system := actor.NewActorSystem("system")
+	system := actor.NewSystem("system")
 
 	account := accountActor{0}
 	accountRef := system.NewActorFromStruct("account", &account)

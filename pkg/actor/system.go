@@ -21,24 +21,24 @@ func init() {
 	}
 }
 
-// ActorSystem is the root supervisor for multiple actors.
-type ActorSystem struct {
+// System is the root supervisor for multiple actors.
+type System struct {
 	name   string
-	actors []*ActorRef
+	actors []*Ref
 	group  sync.WaitGroup
 }
 
-// NewActorSystem creates a new ActorSystem.
-func NewActorSystem(name string) *ActorSystem {
-	return &ActorSystem{
+// NewSystem creates a new System.
+func NewSystem(name string) *System {
+	return &System{
 		name:   name,
-		actors: make([]*ActorRef, 0),
+		actors: make([]*Ref, 0),
 		group:  sync.WaitGroup{},
 	}
 }
 
 // NewActorFromFn will add, and immediately run, a new actor within the actor system.
-func (s *ActorSystem) NewActorFromFn(name string, fn ActorFn) *ActorRef {
+func (s *System) NewActorFromFn(name string, fn ActorFn) *Ref {
 	// Generate path
 	actorCount = actorCount + 1
 	id, err := hasher.Encode([]int{actorCount})
@@ -71,19 +71,19 @@ func (s *ActorSystem) NewActorFromFn(name string, fn ActorFn) *ActorRef {
 	}
 
 	// Create and store the reference
-	ref := &ActorRef{inbox, path}
+	ref := &Ref{inbox, path}
 	s.actors = append(s.actors, ref)
 
 	return ref
 }
 
 // NewActorFromStruct will add, and immediately run, a new actor within the actor system.
-func (s *ActorSystem) NewActorFromStruct(name string, actor Actor) *ActorRef {
+func (s *System) NewActorFromStruct(name string, actor Actor) *Ref {
 	return s.NewActorFromFn(name, actor.Receive)
 }
 
 // Terminate will cancel all actors in the system and return. This call is blocking.
-func (s *ActorSystem) Terminate() error {
+func (s *System) Terminate() error {
 	logger.Infow(
 		"terminating actor system",
 		"system_name", s.name,
