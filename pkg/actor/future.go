@@ -15,7 +15,6 @@ type futureState uint8
 const (
 	scheduled futureState = iota
 	computed
-	cancelled
 	thrown
 )
 
@@ -48,8 +47,6 @@ func (f *FutureTask) GetResult() (interface{}, error) {
 	}()
 
 	switch currentState {
-	case cancelled:
-		return nil, errors.New("future was cancelled")
 	case thrown:
 		return nil, f.result.(error)
 	case scheduled:
@@ -71,8 +68,6 @@ func (f *FutureTask) Resolve(result interface{}) error {
 	defer f.mux.Unlock()
 
 	switch f.state {
-	case cancelled:
-		return errors.New("future was cancelled")
 	case thrown:
 		return errors.New("future has already been rejected")
 	case computed:
@@ -92,8 +87,6 @@ func (f *FutureTask) Reject(err error) error {
 	defer f.mux.Unlock()
 
 	switch f.state {
-	case cancelled:
-		return errors.New("future was cancelled")
 	case thrown:
 		return errors.New("future has already been rejected")
 	case computed:
