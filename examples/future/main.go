@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/cmcahoon/ligero/pkg/actor"
+	"github.com/cmcahoon/dramatic/pkg/actor"
 	"log"
 	"time"
 )

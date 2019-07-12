@@ -1,4 +1,4 @@
-module github.com/cmcahoon/ligero
+module github.com/cmcahoon/dramatic
 
 require (
 	github.com/speps/go-hashids v2.0.0+incompatible

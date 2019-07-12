@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/cmcahoon/ligero/pkg/actor"
+	"github.com/cmcahoon/dramatic/pkg/actor"
 )
 
 func main() {
