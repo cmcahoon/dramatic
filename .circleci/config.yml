@@ -8,13 +8,13 @@ jobs:
       - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: mkdir test-results/go
+      - run: mkdir /tmp/test-results/go
       - run: go get github.com/jstemmer/go-junit-report
       - go/mod-download
       - run:
           name: Run Tests
           command: go test -v ./pkg/actor | go-junit-report > test-results/go/result.xml
       - store_test_results:
-          path: test-results
+          path: /tmp/test-results
       - codecov/upload:
           file: coverage/cobertura-coverage.xml
