@@ -15,8 +15,8 @@ jobs:
       - go/mod-download
       - run:
           name: Run Tests
-          command: go test -v ./pkg/actor | go-junit-report > ${TEST_RESULTS}/result.xml
+          command: go test -v -coverprofile=coverage.txt -covermode=atomic ./pkg/actor | go-junit-report > ${TEST_RESULTS}/result.xml
       - store_test_results:
           path: /tmp/test-results
       - codecov/upload:
-          file: coverage/cobertura-coverage.xml
+          file: coverage.xml
