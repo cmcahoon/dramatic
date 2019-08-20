@@ -17,6 +17,6 @@ jobs:
           name: Run Tests
           command: go test -v ./pkg/actor | go-junit-report > ${TEST_RESULTS}/result.xml
       - store_test_results:
-          path: $TEST_RESULTS
+          path: /tmp/test-results
       - codecov/upload:
           file: coverage/cobertura-coverage.xml
