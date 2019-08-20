@@ -1,0 +1,11 @@
+version: 2.1
+orbs:
+  go: circle/go@0.2.0
+jobs:
+  build:
+    docker:
+      - image: circleci/go:1.11
+    steps:
+      - checkout
+      - go/mod-download
+      - go/test
