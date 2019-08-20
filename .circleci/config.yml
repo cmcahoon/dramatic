@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  codecov: codecov/codecov@1.0.5
   go: circle/go@0.2.0
 jobs:
   build:
@@ -9,3 +10,7 @@ jobs:
       - checkout
       - go/mod-download
       - go/test
+      - store_test_results:
+          path: test-results
+      - codecov/upload:
+          file: coverage/cobertura-coverage.xml
