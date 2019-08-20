@@ -1,4 +1,9 @@
 # dramatic - Actors for Go.
+[![CircleCI](https://circleci.com/gh/cmcahoon/dramatic.svg?style=svg)](https://circleci.com/gh/cmcahoon/dramatic)
+&nbsp;
+[![codecov](https://codecov.io/gh/cmcahoon/dramatic/branch/master/graph/badge.svg)](https://codecov.io/gh/cmcahoon/dramatic)
+
+
 
 ## First Things First
 
