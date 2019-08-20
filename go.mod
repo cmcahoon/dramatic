@@ -1,7 +1,7 @@
 module github.com/cmcahoon/dramatic
 
 require (
-	github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024 // indirect
+	github.com/pkg/errors v0.8.1 // indirect
 	github.com/speps/go-hashids v2.0.0+incompatible
 	github.com/stretchr/testify v1.3.0
 	go.uber.org/atomic v1.4.0 // indirect
